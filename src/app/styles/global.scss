@@ -1,0 +1,26 @@
+@use './null.scss';
+@use './mixins.scss' as *;
+
+body {
+    font-family: 'Inter 18pt', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @include breakpoint(tablet) {
+        padding: 0 15px;
+        max-width: 1024px;
+    }
+
+    @include breakpoint(mobile) {
+        padding: 0 10px;
+        max-width: 768px;
+    }
+}
