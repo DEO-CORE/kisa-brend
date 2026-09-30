@@ -6,6 +6,9 @@ import {
     AboutPage,
     ErrorPage,
     LoadingPage,
+    CatalogPage,
+    DetailCatalogPage,
+    NewsPage,
 } from "@pages/index";
 
 export const router = createBrowserRouter([
@@ -17,6 +20,9 @@ export const router = createBrowserRouter([
             { path: paths.main, element: <HomePage /> },
             { path: paths.loading, element: <LoadingPage /> },
             { path: paths.about, element: <AboutPage /> },
+            { path: paths.catalog, element: <CatalogPage /> },
+            { path: paths.catalogDetail, element: <DetailCatalogPage /> },
+            { path: paths.news, element: <NewsPage /> },
         ],
     },
 ]);

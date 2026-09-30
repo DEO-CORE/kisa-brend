@@ -3,5 +3,8 @@ export const paths = {
     error: '*',
     loading: '/loading',
     about: '/about',
+    catalog: '/catalog',
+    catalogDetail: '/catalog/:id',
+    news: '/news',
     home: '/home',
 };
