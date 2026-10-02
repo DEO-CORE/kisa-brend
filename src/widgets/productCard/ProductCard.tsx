@@ -5,6 +5,31 @@ import { useCart } from '@/features/cart/cartContext';
 import { paths } from '@/shared/constants/consts';
 import './productCard.scss';
 
+const ProductImage = ({ src, alt }: { src: string; alt: string }) => {
+    const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+
+    return (
+        <div className={`productCard__picture productCard__picture--${status}`} aria-busy={status === 'loading'}>
+            {status !== 'loaded' && <img className="productCard__placeholder" src="/images/products/loading.svg" alt="" aria-hidden="true" />}
+            <img
+                className="productCard__image"
+                src={src}
+                alt={alt}
+                loading="lazy"
+                decoding="async"
+                width={1680}
+                height={2100}
+                onLoad={() => setStatus('loaded')}
+                onError={() => setStatus('error')}
+                ref={(image) => {
+                    if (image?.complete && image.naturalWidth > 0) setStatus('loaded');
+                }}
+            />
+            {status === 'error' && <span className="productCard__image-error">Фото недоступно</span>}
+        </div>
+    );
+};
+
 export const ProductCard = ({ product, compact = false }: { product: Product; compact?: boolean }) => {
     const [selectedId, setSelectedId] = useState(product.id);
     const [size, setSize] = useState<Size>('M');
@@ -16,11 +41,12 @@ export const ProductCard = ({ product, compact = false }: { product: Product; co
     return (
         <article className={`productCard${compact ? ' productCard--related' : ''}`}>
             <Link className="productCard__media" to={url} aria-label={`${selected.name}, ${selected.color}`}>
-                <img className="productCard__image" src={selected.image} alt={`${selected.name}, ${selected.color}`} loading="lazy" width={1680} height={2100} />
+                <ProductImage key={selected.image} src={selected.image} alt={`${selected.name}, ${selected.color}`} />
                 {selected.isNew && !compact && <span className="productCard__badge">NEW</span>}
             </Link>
             <Link className="productCard__name" to={url}>{selected.name}</Link>
             <p className="productCard__price">{formatPrice(selected.price)}</p>
+            {!compact && <p className="productCard__color">{selected.color}</p>}
             {!compact && (
                 <div className="productCard__options">
                     <select className="productCard__select" value={size} onChange={(event) => setSize(event.target.value as Size)} aria-label={`Размер: ${selected.name}`}>

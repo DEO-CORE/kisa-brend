@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { catalogProducts, products } from '@/entities/product/products';
 import { ProductCard } from '@/widgets/productCard/ProductCard';
 import './catalog.scss';
 
 export const CatalogPage = () => {
+    const [filtersOpen, setFiltersOpen] = useState(false);
     const [color, setColor] = useState('');
     const [category, setCategory] = useState('');
     const [collection, setCollection] = useState('');
@@ -14,12 +15,19 @@ export const CatalogPage = () => {
     const sorted = [...filtered].sort((a, b) => sort === 'asc' ? a.price - b.price : sort === 'desc' ? b.price - a.price : 0);
     const visible = sorted.slice(0, limit);
     const hasFilters = !!(color || category || collection || sort);
+    const adaptiveOrder = [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 4, 9, 14, 15];
     const reset = () => { setColor(''); setCategory(''); setCollection(''); setSort(''); setLimit(16); };
 
     return (
         <section className="catalog" aria-label="Каталог одежды">
             <div className="catalog__toolbar">
-                <div className="catalog__filters">
+                <div className="catalog__mobile-toolbar">
+                    <button type="button" aria-expanded={filtersOpen} aria-controls="catalog-filters" onClick={() => setFiltersOpen(!filtersOpen)}>Фильтры <span aria-hidden="true">⌄</span></button>
+                    <select value={sort} onChange={(event) => setSort(event.target.value)} aria-label="Сортировка">
+                        <option value="">Сортировка ⌄</option><option value="asc">Сначала дешевле</option><option value="desc">Сначала дороже</option>
+                    </select>
+                </div>
+                <div className={`catalog__filters${filtersOpen ? ' catalog__filters--open' : ''}`} id="catalog-filters">
                     <select className="catalog__filter" value={color} onChange={(event) => setColor(event.target.value)} aria-label="Цвет">
                         <option className="catalog__option" value="">Цвет</option>
                         {[...new Set(products.map((product) => product.color))].map((value) => <option className="catalog__option" value={value} key={value}>{value}</option>)}
@@ -42,7 +50,7 @@ export const CatalogPage = () => {
                 <p className="catalog__count" aria-live="polite">{visible.length} товаров</p>
             </div>
             <div className="catalog__grid">
-                {visible.map((product, index) => <ProductCard key={`${product.id}-${index}`} product={product} />)}
+                {visible.map((product, index) => <div className="catalog__item" key={`${product.id}-${index}`} style={{ '--catalog-order': hasFilters ? index : adaptiveOrder[index] ?? index } as CSSProperties}><ProductCard product={product} /></div>)}
             </div>
             {!visible.length && <div className="catalog__empty"><p className="catalog__empty-text">Товары не найдены</p><button className="catalog__reset" type="button" onClick={reset}>Сбросить фильтры</button></div>}
             {visible.length < sorted.length && <button className="catalog__more" type="button" onClick={() => setLimit((value) => value + 4)}>Загрузить ещё</button>}

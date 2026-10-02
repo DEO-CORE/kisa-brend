@@ -1,8 +1,11 @@
 import './footer.scss';
+import { useLocation } from 'react-router-dom';
 
-export const Footer = () => {
+export const Footer = ({ shop = false }: { shop?: boolean }) => {
+    const { pathname } = useLocation();
+    const isShop = shop || pathname === '/catalog';
     return (
-        <footer className="footer">
+        <footer className={`footer${isShop ? ' footer--shop' : ''}`}>
             <div className="container footer__container">
                 <div className="footer__info">
                     <div className="footer__column">
@@ -38,7 +41,8 @@ export const Footer = () => {
                         <span className="footer__copyright-line">ALL RIGHTS RESERVED</span>
                     </p>
                 </div>
-                <div className="footer__wordmark" aria-label="KISA">KISA</div>
+                {isShop && <div className="footer__wordmark footer__wordmark--mono" aria-label="KISA">KISA</div>}
+                <img className="footer__wordmark" src="/images/brand/kisa-display.png" alt="KISA" width={1440} height={446} />
             </div>
         </footer>
     );

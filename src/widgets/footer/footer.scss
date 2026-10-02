@@ -53,15 +53,9 @@
     }
 
     &__wordmark {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 30.972222cqw;
-        font-size: 37.013889cqw;
-        font-weight: 700;
-        line-height: 1;
-        letter-spacing: -0.05em;
-        text-indent: -0.05em;
+        display: block;
+        width: 100%;
+        height: auto;
     }
 
     &__link:hover {
@@ -109,7 +103,7 @@
         }
 
         &__wordmark {
-            height: 148px;
+            height: auto;
             font-family: 'JetBrains Mono', monospace;
             font-size: 190px;
             font-weight: 500;
@@ -133,7 +127,7 @@
         }
 
         &__wordmark {
-            height: 73px;
+            height: auto;
             font-size: 94px;
         }
     }

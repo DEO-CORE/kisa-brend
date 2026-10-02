@@ -1,10 +1,12 @@
 import { Link, generatePath } from 'react-router-dom';
 import { Minus, Plus, X } from 'lucide-react';
-import { findProduct, formatPrice } from '@/entities/product/products';
+import { findProduct, formatPrice, products } from '@/entities/product/products';
 import { paths } from '@/shared/constants/consts';
 import { Modal } from '@/shared/ui/Modal';
 import { useCart } from './cartContext';
 import './cart.scss';
+import { ProductCard } from '@/widgets/productCard/ProductCard';
+import { Footer } from '@/widgets/footer/Footer';
 
 export const CartDrawer = () => {
     const { items, isOpen, closeCart, changeQuantity } = useCart();
@@ -54,6 +56,7 @@ export const CartDrawer = () => {
                             <p className="cart__notice">Онлайн-заказ пока недоступен.</p>
                         </>
                     )}
+                    <p className="cart__delivery-note">Доставка рассчитывается после подтверждения заказа.<br />Безопасная оплата · Возврат в течение 14 дней</p>
                 </>
             ) : (
                 <div className="cart__empty">
@@ -61,6 +64,13 @@ export const CartDrawer = () => {
                     <Link className="cart__checkout" to={paths.catalog} onClick={closeCart}>Перейти в каталог</Link>
                 </div>
             )}
+            <div className="cart__mobile-after">
+                <section className="cart__recommendations" aria-labelledby="cart-recommendations-title">
+                    <div className="cart__recommendations-heading"><h2 id="cart-recommendations-title">ВАМ МОЖЕТ ПОНРАВИТЬСЯ</h2><span>06</span></div>
+                    <div className="cart__recommendations-grid">{[products[0], products[1], products[2], products[3], products[4], products[0]].map((product, index) => <ProductCard key={`${product.id}-${index}`} product={product} />)}</div>
+                </section>
+                <Footer shop />
+            </div>
         </Modal>
     );
 };

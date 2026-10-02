@@ -7,6 +7,8 @@ import './header.scss';
 
 const MobileNavigation = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { pathname } = useLocation();
+    const sectionLabel = pathname === paths.about ? 'О нас' : pathname === paths.news ? 'Новости' : 'Магазин';
     const rootRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -47,7 +49,7 @@ const MobileNavigation = () => {
                 aria-controls="mobile-navigation"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                Магазин
+                {sectionLabel}
                 <ChevronDown className="header__chevron" size={24} aria-hidden="true" />
             </button>
             <nav
