@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { generatePath, Link, useParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
-import { findProduct, formatPrice, products, sizes, type Product, type Size } from '@/entities/product/products';
+import { formatPrice, sizes, type Product, type Size } from '@/entities/product/products';
+import { useProductCatalog } from '@/entities/product/productCatalogContext';
 import { useCart } from '@/features/cart/cartContext';
 import { paths } from '@/shared/constants/consts';
 import { Modal } from '@/shared/ui/Modal';
@@ -9,6 +10,7 @@ import { ProductCard } from '@/widgets/productCard/ProductCard';
 import './detailCatalog.scss';
 
 const ProductDetails = ({ product }: { product: Product }) => {
+    const { products } = useProductCatalog();
     const [size, setSize] = useState<Size>('M');
     const [showSizes, setShowSizes] = useState(false);
     const [expanded, setExpanded] = useState<string[]>([]);
@@ -100,7 +102,8 @@ const ProductDetails = ({ product }: { product: Product }) => {
 
 export const DetailCatalogPage = () => {
     const { id } = useParams();
-    const product = findProduct(id === 'demo' ? 'hoodie-grey' : id);
+    const { products } = useProductCatalog();
+    const product = products.find((item) => item.id === (id === 'demo' ? 'hoodie-grey' : id));
     if (!product) return <section className="detailCatalog detailCatalog--missing"><h1 className="detailCatalog__title">Товар не найден</h1><Link className="detailCatalog__all" to={paths.catalog}>← Вернуться в каталог</Link></section>;
     return <ProductDetails product={product} key={product.id} />;
 };

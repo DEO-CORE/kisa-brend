@@ -4,6 +4,8 @@ export type Category = 'Худи' | 'Брюки' | 'Футболки';
 
 export interface Product {
     id: string;
+    apiId?: number;
+    colorId?: number;
     name: string;
     category: Category;
     price: number;

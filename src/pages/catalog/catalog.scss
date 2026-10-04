@@ -5,6 +5,7 @@
     color: #111;
 
     &__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 68px; }
+    &__api-notice { margin-bottom: 16px; color: #777; font: 400 11px/1.5 'JetBrains Mono', monospace; }
     &__filters { display: flex; flex-wrap: wrap; align-items: center; gap: 26px; }
     &__filter { width: auto; max-width: 180px; field-sizing: content; appearance: none; padding: 4px 0; font: 500 11px/1.4 'JetBrains Mono', monospace; cursor: pointer; }
     &__count { font: 400 10px/1.4 'JetBrains Mono', monospace; text-transform: uppercase; color: #888; white-space: nowrap; }

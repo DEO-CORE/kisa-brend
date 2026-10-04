@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { findProduct, type Product, type Size } from '@/entities/product/products';
+import { sizes, type Product, type Size } from '@/entities/product/products';
+import { useProductCatalog } from '@/entities/product/productCatalogContext';
 import { CartContext, type CartItem } from './cartContext';
 
 const storageKey = 'kisa-cart-v1';
@@ -9,11 +10,9 @@ const readCart = (): CartItem[] => {
         const saved: unknown = JSON.parse(localStorage.getItem(storageKey) ?? '[]');
         if (!Array.isArray(saved)) return [];
         return saved.flatMap((item) => {
-            if (!item || typeof item.productId !== 'string' || typeof item.size !== 'string') return [];
-            const product = findProduct(item.productId);
-            const stock = product?.stock[item.size as Size];
-            if (!stock || !Number.isInteger(item.quantity) || item.quantity < 1) return [];
-            return [{ productId: item.productId, size: item.size as Size, quantity: Math.min(item.quantity, stock) }];
+            if (!item || typeof item.productId !== 'string' || !sizes.includes(item.size as Size)) return [];
+            if (!Number.isInteger(item.quantity) || item.quantity < 1) return [];
+            return [{ productId: item.productId, size: item.size as Size, quantity: item.quantity }];
         });
     } catch {
         return [];
@@ -21,6 +20,7 @@ const readCart = (): CartItem[] => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+    const { products } = useProductCatalog();
     const [items, setItems] = useState<CartItem[]>(readCart);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -40,14 +40,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const changeQuantity = (productId: string, size: Size, quantity: number) => {
-        const stock = findProduct(productId)?.stock[size] ?? 0;
+        const stock = products.find((product) => product.id === productId)?.stock[size] ?? 0;
         setItems((current) => current
             .map((item) => item.productId === productId && item.size === size ? { ...item, quantity: Math.min(quantity, stock) } : item)
             .filter((item) => item.quantity > 0));
     };
 
     return (
-        <CartContext.Provider value={{ items, isOpen, openCart: () => setIsOpen(true), closeCart: () => setIsOpen(false), addItem, changeQuantity }}>
+        <CartContext.Provider value={{ items, isOpen, openCart: () => setIsOpen(true), closeCart: () => setIsOpen(false), addItem, changeQuantity, clearCart: () => setItems([]) }}>
             {children}
         </CartContext.Provider>
     );

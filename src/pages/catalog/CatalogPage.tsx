@@ -1,16 +1,19 @@
 import { useState, type CSSProperties } from 'react';
-import { catalogProducts, products } from '@/entities/product/products';
+import { useProductCatalog } from '@/entities/product/productCatalogContext';
+import { catalogProducts } from '@/entities/product/products';
 import { ProductCard } from '@/widgets/productCard/ProductCard';
 import './catalog.scss';
 
 export const CatalogPage = () => {
+    const { products, error, isRemote } = useProductCatalog();
     const [filtersOpen, setFiltersOpen] = useState(false);
     const [color, setColor] = useState('');
     const [category, setCategory] = useState('');
     const [collection, setCollection] = useState('');
     const [sort, setSort] = useState('');
     const [limit, setLimit] = useState(16);
-    const filtered = catalogProducts.filter((product) =>
+    const catalog = isRemote || error ? products : catalogProducts;
+    const filtered = catalog.filter((product) =>
         (!color || product.color === color) && (!category || product.category === category) && (!collection || product.isNew));
     const sorted = [...filtered].sort((a, b) => sort === 'asc' ? a.price - b.price : sort === 'desc' ? b.price - a.price : 0);
     const visible = sorted.slice(0, limit);
@@ -20,6 +23,8 @@ export const CatalogPage = () => {
 
     return (
         <section className="catalog" aria-label="Каталог одежды">
+            {error && <p className="catalog__api-notice" role="status">Сервер каталога недоступен. Показаны демонстрационные товары.</p>}
+            {!isRemote && !error && <p className="catalog__api-notice" role="status">Загрузка каталога…</p>}
             <div className="catalog__toolbar">
                 <div className="catalog__mobile-toolbar">
                     <button type="button" aria-expanded={filtersOpen} aria-controls="catalog-filters" onClick={() => setFiltersOpen(!filtersOpen)}>Фильтры <span aria-hidden="true">⌄</span></button>

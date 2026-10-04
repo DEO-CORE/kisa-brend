@@ -17,57 +17,22 @@ If you are developing a production application, we recommend updating the config
 
 ```js
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+  # KISA Shop frontend
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+  React storefront for [kisa_shop_backend](https://github.com/Mardon-programm/kisa_shop_backend).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+  ## Run locally
+
+  1. Start the Django backend on `http://127.0.0.1:8000` and make sure its database contains active products, colors, sizes, and stock records.
+  2. Copy `.env.example` to `.env.local`. The default `/api` URL uses the Vite proxy to reach Django; `/media` images use the same proxy.
+  3. Install dependencies and start Vite:
+
+  ```bash
+  npm install
+  npm run dev
+  ```
+
+  The storefront loads `/api/catalog/products/` and submits checkouts to `/api/orders/`. If the API is unavailable, the storefront uses its demo catalogue.
+
+  For deployment, set `VITE_API_URL` to the API base ending in `/api`. Since the backend does not enable cross-origin requests, serve the frontend and API through the same origin or configure a reverse proxy.
         tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```

@@ -14,6 +14,7 @@ interface CartContextValue {
     closeCart: () => void;
     addItem: (product: Product, size: Size) => void;
     changeQuantity: (productId: string, size: Size, quantity: number) => void;
+    clearCart: () => void;
 }
 
 export const CartContext = createContext<CartContextValue | null>(null);
